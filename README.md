@@ -1,5 +1,5 @@
-# GAREEBI_prototype_hackathonNMIMS
-A decentralized P2P marketplace connecting renewable energy prosumers and consumers through IoT smart meters and secure automated trading to drive community-led sustainability and transparent carbon tracking.
+#GAREEBI_prototype_hackathonNMIMS
+A decentralized P2P marketplace connecting renewable energy prosumers and consumers through IoT smart meters and secure automated trading to drive community led sustainability and transparent carbon tracking.
 
 Renewable Energy Marketplace Portal
 Connecting Prosumers, Consumers, and Investors for a Greener Tomorrow.
@@ -22,14 +22,14 @@ The hardware foundation of the system. Every participant (producer or consumer) 
 
 2. P2P Service (Transaction Layer)
 This is the "brain" of the marketplace, often powered by Blockchain (Smart Contracts) to ensure trustless trading.
-•	Automated Matching: An order-matching engine that pairs sellers (e.g., a rooftop solar owner) with buyers based on price, proximity, and volume.
+•	Automated Matching: An order matching engine that pairs sellers (e.g., a rooftop solar owner) with buyers based on price, proximity, and volume.
 •	Smart Contracts: When a match is found, a contract automatically executes the trade, handling the digital wallet transfer and logging the "Energy Token" exchange.
 •	Dynamic Pricing: Implements algorithms that adjust prices based on local demand/supply (e.g., lower prices during peak sunny hours).
 
 3. Backend Monitoring (Management Layer)
 The administrative and analytical powerhouse that ensures system health.
 •	Grid Stability Monitoring: Tracks total load across the microgrid to prevent surges or blackouts.
-•	Fraud Detection: Uses machine learning to identify "False Data Injection"—detecting if a user is trying to spoof their smart meter readings to earn unearned credits.
+•	Fraud Detection: Uses machine learning to identify "False Data Injection" detecting if a user is trying to spoof their smart meter readings to earn unearned credits.
 •	Predictive Analytics: Forecasts upcoming energy production based on integrated weather APIs (Solar/Wind forecasts).
 
 4. Human Impact and Global Urgency
