@@ -1,4 +1,4 @@
-# ⚡ GAREEBI  - (Grid- linked Autonomous Reserves for Efficent Energy Billing Interface)
+# ⚡ GAREEBI  - (Green And Renewable Energy Exchange By IoT)
 ### Peer-to-Peer Microgrid Energy Trading Platform  
 
 <div align="center">
@@ -9,6 +9,8 @@
 ![IoT](https://img.shields.io/badge/Hardware-ESP32-E7352C?logo=espressif&logoColor=white)
 
 **Decentralized. Sustainable. Physical.**
+
+demonstration video and presentation link - https://drive.google.com/drive/folders/1iNJECqqoQDzwcl8ufGNy_SwZ3OrLAkdM?usp=sharing
 
 </div>
 
