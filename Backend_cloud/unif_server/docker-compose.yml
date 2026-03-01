@@ -1,0 +1,60 @@
+version: "3.9"
+
+services:
+  # ── TimescaleDB (PostgreSQL + TimescaleDB extension) ──
+  db:
+    image: timescale/timescaledb:latest-pg15
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-gareebi_db}
+      POSTGRES_USER: ${DB_USER:-gareebi_user}
+      POSTGRES_PASSWORD: ${DB_PASS:-gareebi_pass}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-gareebi_user} -d ${DB_NAME:-gareebi_db}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis (Pub/Sub + Session Cache) ──
+  cache:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── GAREEBI Spring Server ──
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-gareebi_db}
+      DB_USER: ${DB_USER:-gareebi_user}
+      DB_PASS: ${DB_PASS:-gareebi_pass}
+      REDIS_HOST: cache
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET:-gareebi-super-secret-key-change-in-production-min-256-bits-long}
+      JWT_EXPIRY_MS: ${JWT_EXPIRY_MS:-86400000}
+      PORT: 8080
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+
+volumes:
+  pgdata:

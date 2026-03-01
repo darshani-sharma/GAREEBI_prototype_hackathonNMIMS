@@ -1,0 +1,21 @@
+# Compiled output
+build/
+.gradle/
+out/
+*.jar
+*.war
+
+# Environment secrets
+.env
+
+# IDE files
+.idea/
+*.iml
+.vscode/settings.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Gradle wrapper jar (optionally commit it, but keep .gitignore clean)
+gradle/wrapper/gradle-wrapper.jar

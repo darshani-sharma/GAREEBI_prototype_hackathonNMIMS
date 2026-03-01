@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: gareebi-server
+
+  # R2DBC (Reactive PostgreSQL)
+  r2dbc:
+    url: r2dbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:gareebi_db}
+    username: ${DB_USER:gareebi_user}
+    password: ${DB_PASS:gareebi_pass}
+    pool:
+      initial-size: 5
+      max-size: 20
+
+  # JDBC DataSource (Flyway only)
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:gareebi_db}
+    username: ${DB_USER:gareebi_user}
+    password: ${DB_PASS:gareebi_pass}
+    driver-class-name: org.postgresql.Driver
+
+  # Flyway
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  # Redis
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+server:
+  port: ${PORT:8080}
+
+# JWT Configuration
+app:
+  jwt:
+    secret: ${JWT_SECRET:gareebi-super-secret-key-change-in-production-min-256-bits-long}
+    expiration-ms: ${JWT_EXPIRY_MS:86400000} # 24 hours
+
+logging:
+  level:
+    com.gareebi: DEBUG
+    org.springframework.r2dbc: DEBUG
