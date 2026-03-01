@@ -1,39 +1,167 @@
-#GAREEBI_prototype_hackathonNMIMS
-A decentralized P2P marketplace connecting renewable energy prosumers and consumers through IoT smart meters and secure automated trading to drive community led sustainability and transparent carbon tracking.
+# ⚡ GAREEBI  - (Grid- linked Autonomous Reserves for Efficent Energy Billing Interface)
+### Peer-to-Peer Microgrid Energy Trading Platform  
 
-Renewable Energy Marketplace Portal
-Connecting Prosumers, Consumers, and Investors for a Greener Tomorrow.
+<div align="center">
+
+![Android](https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white)
+![Backend](https://img.shields.io/badge/Backend-Flask-000000?logo=flask)
+![Cloud](https://img.shields.io/badge/Cloud-Dockerized-2496ED?logo=docker&logoColor=white)
+![IoT](https://img.shields.io/badge/Hardware-ESP32-E7352C?logo=espressif&logoColor=white)
+
+**Decentralized. Sustainable. Physical.**
+
+</div>
+
+---
+
+## 🌍 Problem
+
+Rural and semi-urban communities generate renewable energy (solar/biogas),  
+but lack a transparent system to trade excess power locally.
+
+Traditional grids:
+- ❌ Centralized  
+- ❌ Opaque billing  
+- ❌ No carbon awareness  
+- ❌ No micro-level energy routing  
+
+---
+
+## 💡 Solution
+
+**GAREEBI** enables real-time peer-to-peer electricity trading  
+with actual physical power routing via IoT hardware.
+
+A user buys energy → Cloud verifies → Relay switches → Power flows.
+
+Not simulated.  
+Not theoretical.  
+**Physically executed.**
+
+---
+
+# 🏗 System Architecture
+📱 ANDROID APP (Kotlin + Compose)
+          │
+POST /api/purchase
+          ▼
+☁️ CLOUD BROKER (Dockerized Flask on Render)
+          │
+  GET /api/status
+          ▼
+🔌 ESP32 MICROGRID NODE
+          │
+          ▼
+💡 RELAY SWITCHES → ELECTRICITY FLOWS
 
 
-Project Overview
-The Renewable Energy Marketplace is a decentralized digital platform designed to bridge the gap between green energy producers (prosumers) and those looking to consume or invest in sustainable power. By leveraging IoT and P2P trading, the platform removes the middleman, allowing a homeowner with solar panels to sell excess electricity directly to their neighbour or a local business.
-Objectives
-•	Decentralized Exchange: Move away from monolithic power grids toward local, resilient energy clusters.
-•	P2P Trading: Facilitate direct financial and energy transactions between peers.
-•	Community Sustainability: Provide a platform for collective investment in community wind farms or biogas plants.
 
-Multilayered System Architecture
-The platform operates on a 3-tier architecture to ensure real-time accuracy and secure financial settlements.
-1. Smart Meters (User Layer)
-The hardware foundation of the system. Every participant (producer or consumer) is equipped with an IoT-enabled smart meter.
-•	Real-time Data Acquisition: Measures energy generation (input) and consumption (output) at millisecond intervals.
-•	Edge Validation: Validates that the energy being sold actually exists in the local circuit before listing it on the marketplace.
-•	Secure Communication: Uses protocols like MQTT or HTTPS to send encrypted telemetry data to the P2P service.
+### Flow
 
-2. P2P Service (Transaction Layer)
-This is the "brain" of the marketplace, often powered by Blockchain (Smart Contracts) to ensure trustless trading.
-•	Automated Matching: An order matching engine that pairs sellers (e.g., a rooftop solar owner) with buyers based on price, proximity, and volume.
-•	Smart Contracts: When a match is found, a contract automatically executes the trade, handling the digital wallet transfer and logging the "Energy Token" exchange.
-•	Dynamic Pricing: Implements algorithms that adjust prices based on local demand/supply (e.g., lower prices during peak sunny hours).
+1. User purchases energy (kWh).
+2. Backend updates trade state.
+3. ESP32 polls cloud status.
+4. Relay activates.
+5. Power is physically routed.
 
-3. Backend Monitoring (Management Layer)
-The administrative and analytical powerhouse that ensures system health.
-•	Grid Stability Monitoring: Tracks total load across the microgrid to prevent surges or blackouts.
-•	Fraud Detection: Uses machine learning to identify "False Data Injection" detecting if a user is trying to spoof their smart meter readings to earn unearned credits.
-•	Predictive Analytics: Forecasts upcoming energy production based on integrated weather APIs (Solar/Wind forecasts).
+---
 
-4. Human Impact and Global Urgency
-This platform transforms passive consumers into "prosumers," granting individuals financial autonomy by allowing them to sell excess energy directly to their community. By removing corporate monopolies and opaque billing, it democratizes the grid, ensuring that energy prices are driven by local supply rather than corporate greed. However, the reality is stark: our current centralized infrastructure is a "single point of failure" prone to mass blackouts and systemic "greenwashing," where fossil fuel power is falsely sold as renewable. As carbon taxes rise and fossil fuels deplete, staying tethered to the old grid is a massive financial liability. Transitioning to this decentralized P2P marketplace isn't just a technical upgrade; it is a critical defense against energy poverty and a looming global climate crisis.
+# ⚡ Core Features
 
-5.Android Application Requirement
-The Android application is an essential component of the Renewable Energy Marketplace Portal, designed to provide users with real-time access to energy trading and sustainability analytics. The app enables prosumers to monitor energy generation, list surplus electricity for sale, and track transaction history, while consumers can purchase renewable energy, view pricing details, and manage their digital energy wallet. It also provides instant notifications for trade confirmations, wallet updates, and carbon credit earnings. The application integrates securely with the backend API and smart meter data streams, ensuring real-time synchronization and encrypted communication. By offering a mobile interface, the platform enhances accessibility, user engagement, and operational efficiency within decentralized microgrids.
+### 🔁 Real-Time Energy Trading
+Instant P2P electricity exchange via mobile interface.
+
+### 🌱 Carbon Footprint Tracking
+Dynamic CO₂ calculation: Carbon = kWh × 0.71 kg CO₂
+
+
+Users see real environmental impact per trade.
+
+### 🔌 Physical Relay Control
+5V hardware relay triggered by cloud transaction.
+
+### 📱 Modern Android Architecture
+- Kotlin
+- Jetpack Compose
+- MVVM
+- StateFlow
+- Material 3
+
+### ☁️ Cloud-Native Backend
+- Python 3.11
+- Flask API
+- Gunicorn
+- Docker container
+- CI/CD deployed on Render
+
+---
+
+# 🛠 Tech Stack
+
+## Hardware (Microgrid Layer)
+
+- ESP32 (WiFi enabled)
+- 5V Active-Low Relay Module
+- Basic Load Node (LED / ESP8266)
+- Arduino Framework (C++)
+
+---
+
+## Backend (Control Layer)
+
+- Flask REST API
+- Gunicorn
+- Docker
+- Render Cloud Hosting
+
+Endpoints:
+POST /api/purchase
+Body: { "units": 5 }
+
+GET /api/status
+Response: { "relay_status": "ON" | "OFF" }
+
+
+---
+
+## Mobile (User Layer)
+
+- Android Studio
+- Kotlin
+- Jetpack Compose
+- OkHttp3 Networking
+- Reactive StateFlow Architecture
+
+---
+
+# 🚀 Quick Start
+
+### 1️⃣ Deploy Backend
+Auto-deploy via GitHub → Render webhook.
+
+---
+
+### 2️⃣ Flash ESP32
+
+- Open `SellerNode.ino`
+- Update:
+  - WiFi SSID
+  - WiFi Password
+  - `https://esp-hosting-vtlb.onrender.com` (Render URL)
+- Connect Relay IN → Pin D2
+- Upload to ESP32
+
+---
+
+### 3️⃣ Run Android App
+
+- Open project in Android Studio
+- Set cloud base URL
+- Install on physical device
+- Tap **Buy Electricity**
+- Hear the relay click ⚡
+
+---
+
+### Built for NMIMS Hackathon ⚡  
+**Energy should be tradable. Carbon should be visible. Power should be local.**
