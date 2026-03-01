@@ -35,6 +35,7 @@ class JwtAuthFilter(private val jwtUtil: JwtUtil) : WebFilter {
             authorities
         )
 
+        // FIXED: Correctly establish the security context for WebFlux
         return chain.filter(exchange)
             .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth))
     }

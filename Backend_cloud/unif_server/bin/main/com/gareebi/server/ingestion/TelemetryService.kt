@@ -6,7 +6,7 @@ import com.gareebi.server.domain.EnergyType
 import com.gareebi.server.repository.EnergyLogRepository
 import com.gareebi.server.repository.UserRepository
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.springframework.data.redis.core.ReactiveRedisTemplate
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import java.time.OffsetDateTime
@@ -16,7 +16,7 @@ import java.util.UUID
 class TelemetryService(
     private val energyLogRepository: EnergyLogRepository,
     private val userRepository: UserRepository,
-    private val redisTemplate: ReactiveRedisTemplate<String, String>,
+    private val redisTemplate: ReactiveStringRedisTemplate, // FIXED: Using String template to prevent injection crash
     private val objectMapper: ObjectMapper
 ) {
     fun ingestReading(request: TelemetryRequest, principal: AuthenticatedUser): Mono<TelemetryResponse> {
@@ -27,7 +27,7 @@ class TelemetryService(
             .switchIfEmpty(Mono.error(IllegalArgumentException("Meter not found: ${request.meterId}")))
             .flatMap { meterOwner ->
                 if (meterOwner.id != userId) {
-                    Mono.error(SecurityException("You do not own meter: ${request.meterId}"))
+                    Mono.error<EnergyLog>(SecurityException("You do not own meter: ${request.meterId}"))
                 } else {
                     val log = EnergyLog(
                         meterId = request.meterId,
@@ -51,7 +51,7 @@ class TelemetryService(
                 redisTemplate.convertAndSend(REDIS_CHANNEL, payload)
                     .thenReturn(
                         TelemetryResponse(
-                            logId = savedLog.id.toString(),
+                            logId = savedLog.id?.toString(), // FIXED: Safe string conversion
                             meterId = savedLog.meterId.toString(),
                             kwhValue = savedLog.kwhValue,
                             type = savedLog.type,

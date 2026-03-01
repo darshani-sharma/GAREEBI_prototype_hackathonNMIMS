@@ -22,18 +22,14 @@ WORKDIR /app
 RUN addgroup -S gareebi && adduser -S gareebi -G gareebi && \
     mkdir -p /app && chown -R gareebi:gareebi /app
 
+# Now that the plain jar is disabled in Gradle, *.jar will only match the fat jar
 COPY --from=builder --chown=gareebi:gareebi /app/build/libs/*.jar app.jar
 
 USER gareebi
 
 EXPOSE 8080
 
-# Production-ready JVM flags:
-# -XX:+UseContainerSupport: Enable container-aware memory detection (Java 10+)
-# -XX:MaxRAMPercentage=75.0: Use up to 75% of container memory for heap
-# -XX:+UseParallelGC: Use Parallel GC for better throughput in containers
-# -XX:+ExitOnOutOfMemoryError: Exit immediately on OOM (let orchestrator restart)
-# -XX:+DisableExplicitGC: Prevent full GC pauses from System.gc()
+# Production-ready JVM flags
 ENTRYPOINT ["java", \
     "-XX:+UseContainerSupport", \
     "-XX:MaxRAMPercentage=75.0", \

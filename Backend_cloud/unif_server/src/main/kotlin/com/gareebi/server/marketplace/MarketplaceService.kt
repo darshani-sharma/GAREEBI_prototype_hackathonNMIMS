@@ -17,7 +17,7 @@ class MarketplaceService(
                 userRepository.findById(log.meterId)
                     .map { producer ->
                         MarketplaceOffer(
-                            sellerId = producer.id.toString(),
+                            sellerId = producer.id?.toString(), // FIXED: Safe string conversion
                             sellerEmail = producer.email,
                             availableKwh = log.kwhValue,
                             pricePerKwh = producer.pricePerKwh,

@@ -16,8 +16,8 @@ repositories {
 }
 
 val jjwtVersion = "0.12.5"
-val r2dbcPostgresVersion = "1.0.4.RELEASE"
 val flywayVersion = "10.8.1"
+// REMOVED: val r2dbcPostgresVersion = "1.0.4.RELEASE" - Let Spring Boot handle this.
 
 dependencies {
     // Spring WebFlux (reactive HTTP + WebSocket)
@@ -28,7 +28,8 @@ dependencies {
 
     // Reactive R2DBC (non-blocking DB access)
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-    implementation("org.postgresql:r2dbc-postgresql:$r2dbcPostgresVersion")
+    // Let Spring Boot manage the version for compatibility
+    implementation("org.postgresql:r2dbc-postgresql")
 
     // JDBC (Flyway only - Flyway doesn't support R2DBC natively)
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
@@ -64,6 +65,14 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs = listOf("-Xjsr305=strict", "-java-parameters")
         jvmTarget = "17"
     }
+}
+
+// Ensure the plain jar is not generated so Docker COPY *.jar works flawlessly
+tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+    archiveClassifier.set("")
+}
+tasks.getByName<Jar>("jar") {
+    enabled = false
 }
 
 tasks.withType<Test> {

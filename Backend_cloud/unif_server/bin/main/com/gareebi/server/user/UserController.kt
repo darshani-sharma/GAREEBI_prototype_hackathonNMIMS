@@ -25,7 +25,9 @@ class UserController(
             userRepository.findById(userId)
                 .switchIfEmpty(Mono.error(IllegalStateException("User not found"))),
             transactionRepository.sumCo2SavedByUserId(userId).defaultIfEmpty(0.0)
-        ).map { (user, co2Total) ->
+        ).map { tuple ->
+            val user = tuple.t1
+            val co2Total = tuple.t2
             ResponseEntity.ok(
                 UserProfileResponse(
                     id = user.id.toString(),
@@ -51,6 +53,7 @@ class UserController(
         }
 
         return userRepository.findById(userId)
+            .switchIfEmpty(Mono.error(IllegalStateException("User not found"))) // FIXED: Prevent silent failure
             .flatMap { user ->
                 userRepository.save(user.copy(pricePerKwh = BigDecimal.valueOf(request.pricePerKwh)))
             }
@@ -60,22 +63,13 @@ class UserController(
                     "pricePerKwh" to updated.pricePerKwh
                 ) as Any)
             }
-            .onErrorResume {
-                Mono.just(ResponseEntity.internalServerError()
-                    .body(mapOf("error" to "Failed to update price")))
+            .onErrorResume { e ->
+                val status = if (e is IllegalStateException) 404 else 500
+                Mono.just(ResponseEntity.status(status)
+                    .body(mapOf("error" to (e.message ?: "Failed to update price"))))
             }
     }
 }
 
-data class UserProfileResponse(
-    val id: String?,
-    val email: String,
-    val role: String,
-    val walletBalance: BigDecimal,
-    val pricePerKwh: BigDecimal,
-    val totalCo2SavedKg: Double
-)
-
-data class SetPriceRequest(
-    val pricePerKwh: Double
-)
+data class UserProfileResponse(val id: String?, val email: String, val role: String, val walletBalance: BigDecimal, val pricePerKwh: BigDecimal, val totalCo2SavedKg: Double)
+data class SetPriceRequest(val pricePerKwh: Double)

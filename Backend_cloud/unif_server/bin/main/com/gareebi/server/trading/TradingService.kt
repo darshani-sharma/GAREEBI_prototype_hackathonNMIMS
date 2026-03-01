@@ -6,7 +6,7 @@ import com.gareebi.server.ingestion.TelemetryService
 import com.gareebi.server.repository.TransactionRepository
 import com.gareebi.server.repository.UserRepository
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.springframework.data.redis.core.ReactiveRedisTemplate
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.reactive.TransactionalOperator
 import reactor.core.publisher.Mono
@@ -18,7 +18,7 @@ import java.util.UUID
 class TradingService(
     private val userRepository: UserRepository,
     private val transactionRepository: TransactionRepository,
-    private val redisTemplate: ReactiveRedisTemplate<String, String>,
+    private val redisTemplate: ReactiveStringRedisTemplate, // FIXED: Using String template
     private val objectMapper: ObjectMapper,
     private val transactionalOperator: TransactionalOperator
 ) {
@@ -38,7 +38,9 @@ class TradingService(
                 .switchIfEmpty(Mono.error(IllegalStateException("Buyer not found"))),
             userRepository.findById(sellerId)
                 .switchIfEmpty(Mono.error(IllegalArgumentException("Seller not found: $sellerId")))
-        ).flatMap { (buyer, seller) ->
+        ).flatMap { tuple ->
+            val buyer = tuple.t1
+            val seller = tuple.t2
             val totalPrice = seller.pricePerKwh.multiply(BigDecimal.valueOf(request.amountKwh))
                 .setScale(8, RoundingMode.HALF_UP)
 
@@ -99,26 +101,6 @@ class TradingService(
 }
 
 // DTOs
-data class TradeRequest(
-    val sellerId: UUID,
-    val amountKwh: Double
-)
-
-data class TradeResponse(
-    val transactionId: String?,
-    val amountKwh: Double,
-    val pricePaid: BigDecimal,
-    val co2SavedKg: Double,
-    val newWalletBalance: BigDecimal,
-    val message: String
-)
-
-data class TradeEvent(
-    val eventType: String,
-    val transactionId: String?,
-    val buyerId: String,
-    val sellerId: String,
-    val amountKwh: Double,
-    val pricePaid: Double,
-    val co2SavedKg: Double
-)
+data class TradeRequest(val sellerId: UUID, val amountKwh: Double)
+data class TradeResponse(val transactionId: String?, val amountKwh: Double, val pricePaid: BigDecimal, val co2SavedKg: Double, val newWalletBalance: BigDecimal, val message: String)
+data class TradeEvent(val eventType: String, val transactionId: String?, val buyerId: String, val sellerId: String, val amountKwh: Double, val pricePaid: Double, val co2SavedKg: Double)
